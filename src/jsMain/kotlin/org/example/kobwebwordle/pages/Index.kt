@@ -1,9 +1,7 @@
 package org.example.kobwebwordle.pages
 
 import androidx.compose.runtime.*
-import com.varabyte.kobweb.browser.ApiFetcher
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.silk.components.text.Text
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -12,10 +10,7 @@ import org.example.kobwebwordle.components.widgets.CharInput
 import org.example.kobwebwordle.components.widgets.GuessFeedbackView
 import org.example.kobwebwordle.models.GuessFeedback
 import org.example.kobwebwordle.services.ApiClient
-import org.jetbrains.compose.web.attributes.InputType
-import org.jetbrains.compose.web.dom.Button
-import org.jetbrains.compose.web.dom.Input
-import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLInputElement
 
 @Page
@@ -35,6 +30,11 @@ fun HomePage() {
     fun sendGuess() {
         GlobalScope.launch {
             val guess = chars.fold("") { word, char -> "$word$char" }
+
+            if (guess.length < 5) {
+                return@launch
+            }
+
             val guessFeedback = ApiClient.guess(guess).await()
 
             guessFeedbacks.add(guessFeedback)
@@ -53,29 +53,31 @@ fun HomePage() {
             GuessFeedbackView(it)
         }
 
-        // Display the 5 input fields (1 per character)
-        chars.indices.forEach {
-            CharInput(
-                index = it,
-                value = chars[it],
-                focus = it == 0,
-                onChange = fun (char) {
-                    chars[it] = char
-                },
-                onNext = fun() {
-                    if (it < (chars.size - 1)) {
-                        focusInput(it + 1)
+        Footer () {
+            // Display the 5 input fields (1 per character)
+            chars.indices.forEach {
+                CharInput(
+                    index = it,
+                    value = chars[it],
+                    focus = it == 0,
+                    onChange = fun (char) {
+                        chars[it] = char
+                    },
+                    onNext = fun() {
+                        if (it < (chars.size - 1)) {
+                            focusInput(it + 1)
+                        }
+                    },
+                    onPrev = fun() {
+                        if (it > 0) {
+                            focusInput(it - 1)
+                        }
+                    },
+                    onSubmit = fun() {
+                        sendGuess()
                     }
-                },
-                onPrev = fun() {
-                    if (it > 0) {
-                        focusInput(it - 1)
-                    }
-                },
-                onSubmit = fun() {
-                    sendGuess()
-                }
-            )
+                )
+            }
         }
     }
 }

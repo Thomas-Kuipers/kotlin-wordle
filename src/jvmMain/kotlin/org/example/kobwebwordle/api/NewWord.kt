@@ -10,10 +10,6 @@ import kotlinx.serialization.encodeToString
 import todo.model.WordStore
 
 @Api
-fun guess(ctx: ApiContext) {
-    val guess = ctx.req.query["guess"] as String
-    val correctWord = ctx.data.getValue<WordStore>().getCurrentWord()
-    val guessFeedback = getGuessFeedback(guess, correctWord)
-
-    ctx.res.setBodyText(Json.encodeToString(guessFeedback))
+fun newWord(ctx: ApiContext) {
+    ctx.data.getValue<WordStore>().newWord()
 }

@@ -34,15 +34,16 @@ fun GuessFeedbackView (
             Div(attrs = {
                 style {
                     backgroundColor(colors[feedback]!!)
-                    width(40.px)
-                    height(40.px)
+                    width(80.px)
+                    height(80.px)
                     marginRight(2.px)
                     marginBottom(2.px)
                     borderRadius(4.px)
-                    lineHeight(40.px)
+                    lineHeight(80.px)
                     textAlign("center")
                     borderWidth(0.px)
                     color(Color("white"))
+                    fontSize(20.px)
                 }
             }) {
                 Text(char.toString())
