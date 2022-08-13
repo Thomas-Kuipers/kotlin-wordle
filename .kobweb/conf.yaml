@@ -1,0 +1,13 @@
+site:
+  title: "Kobweb Wordle"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/js/packages/kobwebwordle/kotlin/kobwebwordle.js"
+      api: "build/libs/kobwebwordle.jar"
+    prod:
+      siteRoot: ".kobweb/site"
+
+  port: 8080
