@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 repositories {
@@ -46,6 +47,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
             }
         }
 
@@ -56,13 +58,16 @@ kotlin {
                 implementation(libs.kobweb.silk.core)
                 implementation(libs.kobweb.silk.icons.fa)
                 implementation(libs.kobwebx.markdown)
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
              }
         }
 
         val jvmMain by getting {
             dependencies {
                 implementation(libs.kobweb.api)
-             }
+                implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+            }
         }
     }
 }
