@@ -10,6 +10,8 @@ import org.example.kobwebwordle.components.widgets.CharInput
 import org.example.kobwebwordle.components.widgets.GuessFeedbackView
 import org.example.kobwebwordle.models.GuessFeedback
 import org.example.kobwebwordle.services.ApiClient
+import org.jetbrains.compose.web.css.background
+import org.jetbrains.compose.web.css.borderWidth
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLInputElement
 
@@ -27,6 +29,11 @@ fun HomePage() {
         }
     }
 
+    fun resetInputFields() {
+        chars.indices.forEach { chars[it] = "" }
+        focusInput(0)
+    }
+
     fun sendGuess() {
         GlobalScope.launch {
             val guess = chars.fold("") { word, char -> "$word$char" }
@@ -36,13 +43,16 @@ fun HomePage() {
             }
 
             val guessFeedback = ApiClient.guess(guess).await()
-
             guessFeedbacks.add(guessFeedback)
+            resetInputFields()
+        }
+    }
 
-            // Reset the input fields
-            chars.indices.forEach { chars[it] = "" }
-
-            focusInput(0)
+    fun newGame() {
+        GlobalScope.launch {
+            ApiClient.refresh().await()
+            guessFeedbacks.clear()
+            resetInputFields()
         }
     }
 
@@ -53,7 +63,7 @@ fun HomePage() {
             GuessFeedbackView(it)
         }
 
-        Footer () {
+        Div () {
             // Display the 5 input fields (1 per character)
             chars.indices.forEach {
                 CharInput(
@@ -77,6 +87,19 @@ fun HomePage() {
                         sendGuess()
                     }
                 )
+            }
+        }
+
+        Footer () {
+            Button(attrs = {
+                style {
+                    background("none")
+                }
+                onClick {
+                    newGame()
+                }
+            }) {
+                Text("New game")
             }
         }
     }

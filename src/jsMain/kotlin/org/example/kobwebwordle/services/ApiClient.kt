@@ -25,5 +25,9 @@ class ApiClient {
 
             guessFeedback
         }
+
+        fun refresh() = GlobalScope.async {
+            ApiClient.post("refresh").await()
+        }
     }
 }
