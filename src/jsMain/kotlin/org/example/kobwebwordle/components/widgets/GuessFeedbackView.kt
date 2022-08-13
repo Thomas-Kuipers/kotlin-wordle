@@ -43,7 +43,7 @@ fun GuessFeedbackView (
                     textAlign("center")
                     borderWidth(0.px)
                     color(Color("white"))
-                    fontSize(20.px)
+                    fontSize(30.px)
                 }
             }) {
                 Text(char.toString())

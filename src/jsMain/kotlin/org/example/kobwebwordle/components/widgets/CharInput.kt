@@ -27,7 +27,7 @@ fun CharInput (
             borderWidth(0.px)
             background("#eee")
             padding(0.px)
-            fontSize(20.px)
+            fontSize(30.px)
         }
         id("char-$index")
         value(value)
@@ -50,5 +50,6 @@ fun CharInput (
             }
         }
         if (focus) autoFocus()
+        autoComplete(AutoComplete.off)
     })
 }

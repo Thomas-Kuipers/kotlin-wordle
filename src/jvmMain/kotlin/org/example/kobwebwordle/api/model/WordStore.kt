@@ -40,19 +40,4 @@ class WordStore {
 
         this.currentWord = words.asSequence().shuffled().find { true }!!
     }
-//
-//    private val lock = ReentrantLock()
-//    private val todos = mutableMapOf<String, MutableList<TodoItem>>()
-//
-//    fun add(ownerId: String, todo: String) {
-//        lock.withLock {
-//            todos.computeIfAbsent(ownerId) { mutableListOf() }.add(TodoItem(UUID.randomUUID().toString(), todo))
-//        }
-//    }
-//
-//    fun remove(ownerId: String, id: String) {
-//        lock.withLock { todos[ownerId]?.removeIf { it.id == id } }
-//    }
-//
-//    operator fun get(ownerId: String): List<TodoItem> = lock.withLock { todos[ownerId] } ?: emptyList()
 }

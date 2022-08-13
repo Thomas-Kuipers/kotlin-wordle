@@ -8,18 +8,19 @@ import kotlinx.coroutines.launch
 import org.example.kobwebwordle.components.layouts.PageLayout
 import org.example.kobwebwordle.components.widgets.CharInput
 import org.example.kobwebwordle.components.widgets.GuessFeedbackView
+import org.example.kobwebwordle.models.CharacterFeedback
 import org.example.kobwebwordle.models.GuessFeedback
 import org.example.kobwebwordle.services.ApiClient
-import org.jetbrains.compose.web.css.background
-import org.jetbrains.compose.web.css.borderWidth
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLInputElement
 
 @Page
 @Composable
 fun HomePage() {
-    val chars = mutableStateListOf<String>("a", "a", "a", "a", "a")
+    val chars = mutableStateListOf<String>("", "", "", "", "")
     val guessFeedbacks = mutableStateListOf<GuessFeedback>()
+    val completed = mutableStateOf<Boolean>(false)
 
     fun focusInput(index: Int) {
         val input = document.getElementById("char-$index") as HTMLInputElement?
@@ -45,6 +46,8 @@ fun HomePage() {
             val guessFeedback = ApiClient.guess(guess).await()
             guessFeedbacks.add(guessFeedback)
             resetInputFields()
+
+            completed.value = !guessFeedback.feedback.contains(CharacterFeedback.INCORRECT) && !guessFeedback.feedback.contains(CharacterFeedback.SEMI_CORRECT)
         }
     }
 
@@ -52,6 +55,7 @@ fun HomePage() {
         GlobalScope.launch {
             ApiClient.refresh().await()
             guessFeedbacks.clear()
+            completed.value = false
             resetInputFields()
         }
     }
@@ -63,30 +67,42 @@ fun HomePage() {
             GuessFeedbackView(it)
         }
 
-        Div () {
-            // Display the 5 input fields (1 per character)
-            chars.indices.forEach {
-                CharInput(
-                    index = it,
-                    value = chars[it],
-                    focus = it == 0,
-                    onChange = fun (char) {
-                        chars[it] = char
-                    },
-                    onNext = fun() {
-                        if (it < (chars.size - 1)) {
-                            focusInput(it + 1)
+        if (!completed.value) {
+            Div () {
+                // Display the 5 input fields (1 per character)
+                chars.indices.forEach {
+                    CharInput(
+                        index = it,
+                        value = chars[it],
+                        focus = it == 0,
+                        onChange = fun (char) {
+                            chars[it] = char
+                        },
+                        onNext = fun() {
+                            if (it < (chars.size - 1)) {
+                                focusInput(it + 1)
+                            }
+                        },
+                        onPrev = fun() {
+                            if (it > 0) {
+                                focusInput(it - 1)
+                            }
+                        },
+                        onSubmit = fun() {
+                            sendGuess()
                         }
-                    },
-                    onPrev = fun() {
-                        if (it > 0) {
-                            focusInput(it - 1)
-                        }
-                    },
-                    onSubmit = fun() {
-                        sendGuess()
-                    }
-                )
+                    )
+                }
+            }
+        } else {
+            P (attrs = {
+                style {
+                    fontSize(16.px)
+                    marginTop(20.px)
+                    marginBottom(20.px)
+                }
+            }) {
+                Text("Well done! In just ${guessFeedbacks.size} tries!")
             }
         }
 
@@ -94,6 +110,12 @@ fun HomePage() {
             Button(attrs = {
                 style {
                     background("none")
+                    borderWidth(0.px)
+                    marginTop(20.px)
+                    fontSize(16.px)
+                    cursor("pointer")
+                    color(Color("#2DA2BB"))
+                    textDecoration("underline")
                 }
                 onClick {
                     newGame()
