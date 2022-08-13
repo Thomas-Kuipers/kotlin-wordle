@@ -29,7 +29,7 @@ fun GuessFeedbackView (
     }) {
         guessFeedback.feedback.indices.forEach {
             val feedback: CharacterFeedback = guessFeedback.feedback[it]
-            val char: Char = guessFeedback.chars[it]
+            val char: Char = guessFeedback.chars[it].uppercaseChar()
 
             Div(attrs = {
                 style {
@@ -44,6 +44,7 @@ fun GuessFeedbackView (
                     borderWidth(0.px)
                     color(Color("white"))
                     fontSize(30.px)
+                    fontFamily("sans-serif")
                 }
             }) {
                 Text(char.toString())

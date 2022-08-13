@@ -44,7 +44,7 @@ fun CharInput (
             } else if (it.key === "Enter") {
                 onSubmit()
             } else if (it.key.length == 1) {
-                onChange(it.key)
+                onChange(it.key.uppercase())
                 // Move to next input field when user enters a character
                 onNext()
             }

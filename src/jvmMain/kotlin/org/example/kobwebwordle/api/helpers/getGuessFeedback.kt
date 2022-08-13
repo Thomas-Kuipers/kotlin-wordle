@@ -4,8 +4,8 @@ import org.example.kobwebwordle.models.CharacterFeedback
 import org.example.kobwebwordle.models.GuessFeedback
 
 fun getGuessFeedback(guess: String, correctWord: String): GuessFeedback {
-    val guessChars = guess.toCharArray()
-    val correctChars = correctWord.toCharArray()
+    val guessChars = guess.uppercase().toCharArray()
+    val correctChars = correctWord.uppercase().toCharArray()
     val result = mutableListOf<CharacterFeedback>()
     val chars = mutableListOf<Char>()
 
