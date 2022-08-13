@@ -12,8 +12,13 @@ import org.jetbrains.compose.web.renderComposable
 @Composable
 
 fun CharInput (
-    value: String = "",
-    onChange: (char: String) -> Any
+    index: Int,
+    value: String,
+    focus: Boolean,
+    onChange: (char: String) -> Any,
+    onNext: () -> Any,
+    onPrev: () -> Any,
+    onSubmit: () -> Unit
 ) {
     TextInput (attrs = {
         style {
@@ -27,14 +32,26 @@ fun CharInput (
             background("#eee")
             padding(0.px)
         }
+        id("char-$index")
         value(value)
         maxLength(1)
         onKeyDown {
-            if (it.key === "Backspace") {
+            if (it.key === "Backspace" || it.key === "Delete") {
                 onChange("")
+                // Move to previous input field when user deletes a character
+                onPrev()
+            } else if (it.key === "ArrowLeft") {
+                onPrev()
+            } else if (it.key === "ArrowRight") {
+                onNext()
+            } else if (it.key === "Enter") {
+                onSubmit()
             } else if (it.key.length == 1) {
                 onChange(it.key)
+                // Move to next input field when user enters a character
+                onNext()
             }
         }
+        if (focus) autoFocus()
     })
 }

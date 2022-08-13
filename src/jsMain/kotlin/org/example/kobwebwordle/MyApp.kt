@@ -14,19 +14,6 @@ import com.varabyte.kobweb.silk.theme.registerBaseStyle
 import kotlinx.browser.localStorage
 import org.jetbrains.compose.web.css.*
 
-private const val COLOR_MODE_KEY = "kobwebwordle:colorMode"
-
-@InitSilk
-fun updateTheme(ctx: InitSilkContext) {
-    ctx.config.initialColorMode = localStorage.getItem(COLOR_MODE_KEY)?.let { ColorMode.valueOf(it) } ?: ColorMode.LIGHT
-
-    ctx.config.registerBaseStyle("body") {
-        Modifier.fontFamily(
-	    "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-            "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "sans-serif"
-        )
-    }
-}
 
 @App
 @Composable
