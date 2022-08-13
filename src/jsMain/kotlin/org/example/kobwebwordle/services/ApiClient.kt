@@ -20,7 +20,7 @@ class ApiClient {
         }
 
         fun guess(guess: String): Deferred<GuessFeedback> = GlobalScope.async {
-            val result = ApiClient.post("hello?guess=$guess").await() as String
+            val result = ApiClient.post("guess?guess=$guess").await() as String
             val guessFeedback = Json.decodeFromString<GuessFeedback>(result)
 
             guessFeedback
