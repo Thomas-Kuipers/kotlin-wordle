@@ -34,19 +34,13 @@ fun HomePage() {
 
     PageLayout("Wordle!") {
 
-        Text(guessFeedbacks.size.toString())
-
         guessFeedbacks.forEach {
             GuessFeedbackView(it)
         }
 
-        repeat(guessFeedbacks.size) {
-            Text("guessed")
-        }
-
-        repeat(5) { index ->
-            CharInput (chars[index], fun (char) {
-                chars[index] = char
+        chars.indices.forEach {
+            CharInput(chars[it], fun (char) {
+                chars[it] = char
             })
         }
 

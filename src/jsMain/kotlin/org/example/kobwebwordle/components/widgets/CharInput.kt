@@ -16,6 +16,17 @@ fun CharInput (
     onChange: (char: String) -> Any
 ) {
     TextInput (attrs = {
+        style {
+            width(40.px)
+            height(40.px)
+            marginRight(2.px)
+            borderRadius(4.px)
+            lineHeight(40.px)
+            textAlign("center")
+            borderWidth(0.px)
+            background("#eee")
+            padding(0.px)
+        }
         value(value)
         maxLength(1)
         onKeyDown {

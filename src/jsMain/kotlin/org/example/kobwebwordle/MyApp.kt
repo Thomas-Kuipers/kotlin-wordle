@@ -31,14 +31,5 @@ fun updateTheme(ctx: InitSilkContext) {
 @App
 @Composable
 fun MyApp(content: @Composable () -> Unit) {
-    SilkApp {
-        val colorMode = getColorMode()
-        LaunchedEffect(colorMode) {
-            localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
-        }
-
-        Surface(Modifier.minHeight(100.vh)) {
-            content()
-        }
-    }
+    content()
 }
