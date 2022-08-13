@@ -7,16 +7,20 @@ fun getGuessFeedback(guess: String, correctWord: String): GuessFeedback {
     val guessChars = guess.toCharArray()
     val correctChars = correctWord.toCharArray()
     val result = mutableListOf<CharacterFeedback>()
+    val chars = mutableListOf<Char>()
 
     for (i in correctChars.indices) {
         if (correctChars[i] == guessChars[i]) {
             result.add(CharacterFeedback.CORRECT)
+            chars.add(guessChars[i])
         } else if (correctWord.contains(guessChars[i])) {
             result.add(CharacterFeedback.SEMI_CORRECT)
+            chars.add(guessChars[i])
         } else {
             result.add(CharacterFeedback.INCORRECT)
+            chars.add(guessChars[i])
         }
     }
 
-    return GuessFeedback(result)
+    return GuessFeedback(result, chars)
 }

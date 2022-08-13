@@ -27,12 +27,13 @@ fun GuessFeedbackView (
             display(DisplayStyle.Flex)
         }
     }) {
-        guessFeedback.feedback.forEach {
-
+        guessFeedback.feedback.indices.forEach {
+            val feedback: CharacterFeedback = guessFeedback.feedback[it]
+            val char: Char = guessFeedback.chars[it]
 
             Div(attrs = {
                 style {
-                    backgroundColor(colors[it]!!)
+                    backgroundColor(colors[feedback]!!)
                     width(40.px)
                     height(40.px)
                     marginRight(2.px)
@@ -42,19 +43,10 @@ fun GuessFeedbackView (
                     textAlign("center")
                     borderWidth(0.px)
                     color(Color("white"))
-
                 }
             }) {
-                if (it === CharacterFeedback.CORRECT) {
-                    Text("Correct")
-                } else if (it === CharacterFeedback.SEMI_CORRECT) {
-                    Text("Semi correct")
-                } else if (it === CharacterFeedback.INCORRECT) {
-                    Text("Incorrect")
-                }
+                Text(char.toString())
             }
-
-
         }
     }
 }
