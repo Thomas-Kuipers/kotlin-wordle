@@ -111,7 +111,8 @@ fun HomePage() {
             NewGameButton(
                 onClick = fun () {
                     newGame()
-                }
+                },
+                completed = completed.value
             )
         }
     }
