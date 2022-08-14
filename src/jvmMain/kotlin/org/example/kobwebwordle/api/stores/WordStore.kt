@@ -29,7 +29,7 @@ class WordStore {
     }
 
     fun refresh() {
-        this.currentWord = this.words.asSequence().shuffled().find { true }!!
+        this.currentWord = this.words.random()
     }
 
     fun guess(guess: String): GuessFeedback {
