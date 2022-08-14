@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import org.example.kobwebwordle.components.layouts.PageLayout
 import org.example.kobwebwordle.components.widgets.CharInput
 import org.example.kobwebwordle.components.widgets.GuessFeedbackView
+import org.example.kobwebwordle.components.widgets.NewGameButton
 import org.example.kobwebwordle.models.CharacterFeedback
 import org.example.kobwebwordle.models.GuessFeedback
 import org.example.kobwebwordle.services.ApiClient
@@ -107,22 +108,11 @@ fun HomePage() {
         }
 
         Footer () {
-            Button(attrs = {
-                style {
-                    background("none")
-                    borderWidth(0.px)
-                    marginTop(20.px)
-                    fontSize(16.px)
-                    cursor("pointer")
-                    color(Color("#2DA2BB"))
-                    textDecoration("underline")
-                }
-                onClick {
+            NewGameButton(
+                onClick = fun () {
                     newGame()
                 }
-            }) {
-                Text("New game")
-            }
+            )
         }
     }
 }
