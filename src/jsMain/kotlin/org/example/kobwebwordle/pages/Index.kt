@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import com.varabyte.kobweb.core.Page
 import kotlinx.browser.document
 import kotlinx.browser.window
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.example.kobwebwordle.components.layouts.PageLayout
 import org.example.kobwebwordle.components.widgets.CharInput
@@ -23,6 +22,8 @@ fun HomePage() {
     val chars = mutableStateListOf<String>("", "", "", "", "")
     val guessFeedbacks = mutableStateListOf<GuessFeedback>()
     val completed = mutableStateOf<Boolean>(false)
+    val coroutineScope = rememberCoroutineScope()
+    val apiClient = ApiClient(coroutineScope)
 
     fun focusInput(index: Int) {
         val input = document.getElementById("char-$index") as HTMLInputElement?
@@ -36,36 +37,32 @@ fun HomePage() {
         chars.indices.forEach { chars[it] = "" }
     }
 
-    fun sendGuess() {
-        GlobalScope.launch {
-            val guess = chars.fold("") { word, char -> "$word$char" }
+    suspend fun sendGuess() {
+        val guess = chars.fold("") { word, char -> "$word$char" }
 
-            if (guess.length < 5) {
-                return@launch
-            }
-
-            val guessFeedback = ApiClient.guess(guess).await()
-            guessFeedbacks.add(guessFeedback)
-            resetInputFields()
-            focusInput(0)
-
-            completed.value = !guessFeedback.feedback.contains(CharacterFeedback.INCORRECT) && !guessFeedback.feedback.contains(CharacterFeedback.SEMI_CORRECT)
+        if (guess.length < 5) {
+            return
         }
+
+        val guessFeedback = apiClient.guess(guess)
+        guessFeedbacks.add(guessFeedback)
+        resetInputFields()
+        focusInput(0)
+
+        completed.value = !guessFeedback.feedback.contains(CharacterFeedback.INCORRECT) && !guessFeedback.feedback.contains(CharacterFeedback.SEMI_CORRECT)
     }
 
-    fun newGame() {
-        GlobalScope.launch {
-            ApiClient.refresh().await()
-            guessFeedbacks.clear()
-            completed.value = false
-            resetInputFields()
+    suspend fun newGame() {
+        apiClient.refresh()
+        guessFeedbacks.clear()
+        completed.value = false
+        resetInputFields()
 
-            window.setTimeout(fun () {
-                // Give Compose some time to re-render the inputs, otherwise we can't focus them yet
-                // Todo: detect when compose has actually finished rendering, rather than guessing the time it takes
-                focusInput(0)
-            }, 100)
-        }
+        window.setTimeout(fun () {
+            // Give Compose some time to re-render the inputs, otherwise we can't focus them yet
+            // Todo: detect when compose has actually finished rendering, rather than guessing the time it takes
+            focusInput(0)
+        }, 100)
     }
 
     PageLayout("Wordle!") {
@@ -97,7 +94,9 @@ fun HomePage() {
                             }
                         },
                         onSubmit = fun() {
-                            sendGuess()
+                            coroutineScope.launch {
+                                sendGuess()
+                            }
                         }
                     )
                 }
@@ -117,9 +116,10 @@ fun HomePage() {
         Footer () {
             NewGameButton(
                 onClick = fun () {
-                    newGame()
-                },
-                completed = completed.value
+                    coroutineScope.launch {
+                        newGame()
+                    }
+                }
             )
         }
     }

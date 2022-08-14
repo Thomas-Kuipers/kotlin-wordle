@@ -1,33 +1,25 @@
 package org.example.kobwebwordle.services
 
 import com.varabyte.kobweb.browser.ApiFetcher
-import kotlinx.browser.window
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.await
+import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
 import org.example.kobwebwordle.models.GuessFeedback
 
-class ApiClient {
-    companion object {
-        private fun post(path: String, body: String? = null) = GlobalScope.async {
-            val fetcher = ApiFetcher()
-            val result = fetcher.post(path, true, body?.encodeToByteArray())
+class ApiClient(private val coroutineScope: CoroutineScope) {
+    private suspend fun post(path: String, body: String? = null): String? {
+        val fetcher = ApiFetcher()
+        val result = fetcher.post(path, true, body?.encodeToByteArray())
 
-            result?.decodeToString()
-        }
+        return result?.decodeToString()
+    }
 
-        fun guess(guess: String): Deferred<GuessFeedback> = GlobalScope.async {
-            val result = ApiClient.post("guess?guess=$guess").await() as String
-            val guessFeedback = Json.decodeFromString<GuessFeedback>(result)
+    suspend fun guess(guess: String): GuessFeedback {
+        val result = coroutineScope.async { this@ApiClient.post("guess?guess=$guess") }.await()!!
+        return coroutineScope.async { Json.decodeFromString<GuessFeedback>(result) }.await()
+    }
 
-            guessFeedback
-        }
-
-        fun refresh() = GlobalScope.async {
-            ApiClient.post("refresh").await()
-        }
+    suspend fun refresh() {
+        coroutineScope.async { this@ApiClient.post("refresh") }.await()
     }
 }
