@@ -17,6 +17,9 @@ fun PageLayout(title: String, content: @Composable () -> Unit) {
             alignItems(AlignItems.Center)
             justifyContent(JustifyContent.Center)
             flexDirection(FlexDirection.Column)
+            fontFamily("sans-serif")
+            fontSize(16.px)
+            textAlign("center")
         }
     }) {
         content()
