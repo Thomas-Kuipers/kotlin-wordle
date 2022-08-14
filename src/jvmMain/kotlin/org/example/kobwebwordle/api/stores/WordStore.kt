@@ -3,8 +3,11 @@ package org.example.kobwebwordle.api.stores
 import com.varabyte.kobweb.api.InitApi
 import com.varabyte.kobweb.api.InitApiContext
 import com.varabyte.kobweb.api.data.add
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.example.kobwebwordle.models.CharacterFeedback
 import org.example.kobwebwordle.models.GuessFeedback
+import java.io.File
 
 @InitApi
 fun initWordStore(ctx: InitApiContext) {
@@ -12,24 +15,21 @@ fun initWordStore(ctx: InitApiContext) {
 }
 
 class WordStore {
+    private var words: Collection<String> = mutableListOf<String>("ooooo")
     private var currentWord: String = ""
 
     init {
+        this.setWords()
         this.refresh()
     }
 
-    fun refresh() {
-        val words = listOf<String>(
-            "moose",
-            "goose",
-            "geese",
-            "meese",
-            "nerby",
-            "patat",
-            "spuit"
-        )
+    private fun setWords() {
+        val jsonString: String = File("./src/jvmMain/resources/words.json").readText(Charsets.UTF_8)
+        this.words = Json.decodeFromString(jsonString)
+    }
 
-        this.currentWord = words.asSequence().shuffled().find { true }!!
+    fun refresh() {
+        this.currentWord = this.words.asSequence().shuffled().find { true }!!
     }
 
     fun guess(guess: String): GuessFeedback {
